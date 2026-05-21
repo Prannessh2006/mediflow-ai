@@ -105,12 +105,14 @@ export default function ChatPage() {
         timestamp: new Date(),
       };
       setMessages((prev) => [...prev, aiMsg]);
-    } catch (err) {
+    } catch (err: any) {
+      console.error("API Error details:", err);
+      console.error("Response:", err.response?.data);
       // Demo fallback when backend isn't running
       const fallbackTrace = agentNames.map((name, i) => ({
         agent: name,
         status: "completed" as const,
-        output: { demo: true },
+        output: { demo: true, error: err.message },
         duration_ms: Math.floor(Math.random() * 120) + 30,
       }));
       setLiveTrace(fallbackTrace);
@@ -118,7 +120,7 @@ export default function ChatPage() {
       const aiMsg: Message = {
         id: `a-${Date.now()}`,
         role: "ai",
-        content: `**Demo Mode** — Backend not connected.\n\nI received your query: *"${query}"*\n\nTo see the full AI pipeline working, please start the backend:\n\`\`\`\ncd backend && uvicorn app.main:app --reload\n\`\`\``,
+        content: `**Backend Connection Failed**\n\nI received your query: *"${query}"*\n\nHowever, the backend rejected the request.\n\n**Error:** ${err.message}\n**Details:** ${err.response?.data?.detail || "No additional details provided."}\n\nTo see the full AI pipeline working, please check your Render logs or start the backend locally:\n\`\`\`\ncd backend && uvicorn app.main:app --reload\n\`\`\``,
         intent: "general_inquiry",
         risk_level: "LOW",
         escalated: false,
