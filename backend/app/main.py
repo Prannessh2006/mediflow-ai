@@ -30,8 +30,8 @@ ALLOWED_ORIGINS = os.getenv(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=ALLOWED_ORIGINS + ["*"],  # Open for dev; restrict in production
-    allow_credentials=True,
+    allow_origins=["*"],  # Open for all frontends (Vercel)
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
