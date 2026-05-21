@@ -97,6 +97,9 @@ class MockDatabase:
     def get_appointments(self) -> List[Dict]:
         return list(_mock_appointments)
 
+    def get_user_appointments(self, user_id: str) -> List[Dict]:
+        return [a for a in _mock_appointments if a.get("user_id") == user_id]
+
     def create_appointment(self, data: Dict) -> Dict:
         record = {
             "id": f"appt-{uuid.uuid4().hex[:6]}",
@@ -148,6 +151,9 @@ class MockDatabase:
     # Reports
     def get_reports(self) -> List[Dict]:
         return list(_mock_reports)
+
+    def get_user_reports(self, user_id: str) -> List[Dict]:
+        return [r for r in _mock_reports if r.get("user_id") == user_id]
 
     def create_report(self, data: Dict) -> Dict:
         record = {

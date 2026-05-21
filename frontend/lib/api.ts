@@ -4,6 +4,7 @@
  */
 
 import axios from "axios";
+import { auth } from "./firebase";
 
 const API_BASE = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
@@ -12,6 +13,15 @@ export const api = axios.create({
   headers: { "Content-Type": "application/json" },
   timeout: 30000,
 });
+
+// Intercept requests and attach Firebase auth token if logged in
+api.interceptors.request.use(async (config) => {
+  if (auth.currentUser) {
+    const token = await auth.currentUser.getIdToken();
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+}, (error) => Promise.reject(error));
 
 // ── Types ─────────────────────────────────────────────────────────────────────
 

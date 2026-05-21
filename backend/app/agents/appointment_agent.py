@@ -90,6 +90,7 @@ def run_appointment_agent(
     query: str,
     intent: str,
     patient_name: str,
+    user_id: str,
 ) -> Tuple[Optional[Dict], int]:
     """
     Returns (appointment_data, duration_ms)
@@ -101,6 +102,7 @@ def run_appointment_agent(
         "appointment_booking",
         "appointment_cancellation",
         "appointment_reschedule",
+        "appointment_inquiry",
     }
 
     if intent not in appointment_intents:
@@ -112,6 +114,7 @@ def run_appointment_agent(
     if info["action"] == "book":
         record = db.create_appointment({
             "patient_name": patient_name,
+            "user_id": user_id,
             "doctor_name": info["doctor"],
             "appointment_date": info["date_str"],
             "notes": f"Booked via MediFlow AI: {query[:100]}",
@@ -123,6 +126,18 @@ def run_appointment_agent(
             "date": info["date_str"],
             "status": "pending",
         }
+    elif intent == "appointment_inquiry":
+        appts = db.get_user_appointments(user_id)
+        if appts:
+            result = {
+                "action": "inquiry_results",
+                "appointments": appts
+            }
+        else:
+            result = {
+                "action": "inquiry_results",
+                "appointments": []
+            }
     elif info["action"] == "cancel":
         result = {
             "action": "cancel_requested",

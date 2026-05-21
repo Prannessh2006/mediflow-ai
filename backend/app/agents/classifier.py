@@ -19,6 +19,7 @@ INTENT_LABELS = [
     "follow_up_request",
     "report_upload",
     "emergency_symptom",
+    "appointment_inquiry",
     "general_inquiry",
 ]
 
@@ -32,6 +33,7 @@ _PATTERNS = {
     "follow_up_request":        r"\b(follow[-\s]?up|check[-\s]?up|results?|test\s+results?|report\s+ready|next\s+visit)\b",
     "report_upload":            r"\b(upload|send\s+(my\s+)?report|share\s+(my\s+)?report|attach)\b",
     "emergency_symptom":        r"\b(chest\s+pain|can'?t\s+breathe|difficulty\s+breath|unconscious|severe\s+bleed|emergency|stroke|heart\s+attack|allergic\s+reaction|seizure|faint)\b",
+    "appointment_inquiry":      r"\b(my\s+appointments?|appointments?\s+so\s+far|when\s+is\s+my\s+appointment|list\s+appointments?|show\s+appointments?)\b",
 }
 
 

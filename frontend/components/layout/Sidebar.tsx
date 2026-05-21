@@ -2,6 +2,9 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/components/AuthProvider";
+import { auth, googleProvider } from "@/lib/firebase";
+import { signInWithPopup, signOut } from "firebase/auth";
 import {
   Activity,
   Bot,
@@ -11,6 +14,8 @@ import {
   Heart,
   Shield,
   ChevronRight,
+  LogOut,
+  LogIn
 } from "lucide-react";
 
 const navItems = [
@@ -23,6 +28,23 @@ const navItems = [
 
 export function Sidebar() {
   const pathname = usePathname();
+  const { user, loading } = useAuth();
+
+  const handleSignIn = async () => {
+    try {
+      await signInWithPopup(auth, googleProvider);
+    } catch (error) {
+      console.error("Login failed", error);
+    }
+  };
+
+  const handleSignOut = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error("Sign out failed", error);
+    }
+  };
 
   return (
     <aside
@@ -149,41 +171,70 @@ export function Sidebar() {
           })}
       </div>
 
-      {/* Bottom Status */}
+      {/* Bottom Auth & Status */}
       <div style={{ marginTop: "auto" }}>
-        <div
-          className="glass-card-static"
-          style={{ padding: "12px 14px" }}
-        >
-          <div style={{ display: "flex", alignItems: "center", gap: "8px", marginBottom: "6px" }}>
-            <Activity size={14} color="#10B981" />
-            <span style={{ fontSize: "12px", color: "#10B981", fontWeight: 600 }}>
-              System Online
-            </span>
+        {loading ? (
+          <div className="glass-card-static" style={{ padding: "12px 14px", opacity: 0.5 }}>Loading...</div>
+        ) : user ? (
+          <div className="glass-card-static" style={{ padding: "12px 14px" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "10px" }}>
+              {user.photoURL ? (
+                <img src={user.photoURL} alt="Profile" style={{ width: 32, height: 32, borderRadius: "50%" }} />
+              ) : (
+                <div style={{ width: 32, height: 32, borderRadius: "50%", background: "#4A5680" }} />
+              )}
+              <div style={{ overflow: "hidden" }}>
+                <div style={{ fontSize: "12px", color: "#fff", fontWeight: 600, whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
+                  {user.displayName}
+                </div>
+                <div style={{ fontSize: "10px", color: "#4A5680", whiteSpace: "nowrap", textOverflow: "ellipsis", overflow: "hidden" }}>
+                  {user.email}
+                </div>
+              </div>
+            </div>
+            <button
+              onClick={handleSignOut}
+              style={{
+                width: "100%",
+                padding: "8px",
+                background: "rgba(255, 0, 0, 0.1)",
+                border: "1px solid rgba(255, 0, 0, 0.2)",
+                borderRadius: "6px",
+                color: "#ff4d4f",
+                fontSize: "12px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "6px",
+                cursor: "pointer",
+              }}
+            >
+              <LogOut size={14} /> Sign Out
+            </button>
           </div>
-          <div style={{ fontSize: "11px", color: "#4A5680" }}>
-            6 agents active • Demo mode
-          </div>
-          <div
+        ) : (
+          <button
+            onClick={handleSignIn}
             style={{
-              marginTop: "8px",
-              height: "4px",
-              background: "rgba(255,255,255,0.06)",
-              borderRadius: "2px",
-              overflow: "hidden",
+              width: "100%",
+              padding: "12px",
+              background: "linear-gradient(135deg, #00D4FF, #7C3AED)",
+              border: "none",
+              borderRadius: "8px",
+              color: "#fff",
+              fontSize: "13px",
+              fontWeight: 600,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              cursor: "pointer",
+              boxShadow: "0 4px 12px rgba(124, 58, 237, 0.3)",
             }}
           >
-            <div
-              style={{
-                height: "100%",
-                width: "78%",
-                background: "linear-gradient(90deg, #00D4FF, #10B981)",
-                borderRadius: "2px",
-                transition: "width 1s ease",
-              }}
-            />
-          </div>
-        </div>
+            <LogIn size={16} /> Sign In with Google
+          </button>
+        )}
       </div>
     </aside>
   );

@@ -1,6 +1,7 @@
 """FastAPI routes: /appointments"""
 
-from fastapi import APIRouter, HTTPException
+from app.auth import get_current_user, User
+from fastapi import APIRouter, HTTPException, Depends
 from typing import List
 from app.database.models import AppointmentCreate, AppointmentUpdate, Appointment
 from app.database.supabase import db
@@ -9,13 +10,15 @@ router = APIRouter(prefix="/appointments")
 
 
 @router.get("", response_model=List[dict])
-async def list_appointments():
-    return db.get_appointments()
+async def list_appointments(user: User = Depends(get_current_user)):
+    return db.get_user_appointments(user.uid)
 
 
 @router.post("/book", response_model=dict)
-async def book_appointment(data: AppointmentCreate):
-    record = db.create_appointment(data.model_dump())
+async def book_appointment(data: AppointmentCreate, user: User = Depends(get_current_user)):
+    appt_data = data.model_dump()
+    appt_data["user_id"] = user.uid
+    record = db.create_appointment(appt_data)
     return record
 
 

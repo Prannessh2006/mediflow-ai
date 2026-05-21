@@ -23,6 +23,8 @@ MOCK_SUMMARIES = [
     "Urine routine: Slight proteinuria noted (+1). Suggest repeat test after 2 weeks. Other parameters normal. No infection detected.",
 ]
 
+from app.auth import get_current_user, User
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
 
 import os
 
@@ -31,6 +33,7 @@ async def upload_report(
     file: UploadFile = File(...),
     patient_name: str = Form(default="Anonymous"),
     patient_email: str = Form(default=""),
+    user: User = Depends(get_current_user),
 ):
     # Read file content
     content = await file.read()
@@ -66,8 +69,9 @@ async def upload_report(
         summary = random.choice(MOCK_SUMMARIES)
 
     record = db.create_report({
-        "patient_name": patient_name,
-        "patient_email": patient_email,
+        "patient_name": user.name,
+        "patient_email": user.email,
+        "user_id": user.uid,
         "file_name": file.filename,
         "file_url": f"/uploads/{file.filename}",
         "extracted_summary": summary,
@@ -84,8 +88,8 @@ async def upload_report(
 
 
 @upload_router.get("/reports")
-async def list_reports():
-    return db.get_reports()
+async def list_reports(user: User = Depends(get_current_user)):
+    return db.get_user_reports(user.uid)
 
 
 # ─── Admin Routes ─────────────────────────────────────────────────────────────

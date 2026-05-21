@@ -21,6 +21,7 @@ class WorkflowState(TypedDict):
     # Input
     query: str
     patient_name: str
+    user_id: str
     session_id: str
 
     # Agent outputs
@@ -95,7 +96,7 @@ def rag_node(state: WorkflowState) -> WorkflowState:
 
 def appointment_node(state: WorkflowState) -> WorkflowState:
     appt_data, duration = run_appointment_agent(
-        state["query"], state["intent"], state["patient_name"]
+        state["query"], state["intent"], state["patient_name"], state["user_id"]
     )
     state["appointment_data"] = appt_data
     state["agent_trace"].append({
@@ -188,11 +189,12 @@ def build_workflow() -> StateGraph:
 workflow = build_workflow()
 
 
-def run_workflow(query: str, patient_name: str, session_id: str) -> WorkflowState:
+def run_workflow(query: str, patient_name: str, user_id: str, session_id: str) -> WorkflowState:
     """Entry point: runs the full 6-agent pipeline."""
     initial_state: WorkflowState = {
         "query": query,
         "patient_name": patient_name,
+        "user_id": user_id,
         "session_id": session_id,
         "intent": None,
         "risk_level": None,

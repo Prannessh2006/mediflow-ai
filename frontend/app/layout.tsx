@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   keywords: "healthcare AI, clinic management, appointment booking, medical AI assistant",
 };
 
+import { AuthProvider } from "@/components/AuthProvider";
+
 export default function RootLayout({
   children,
 }: {
@@ -21,12 +23,14 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
       <body className="bg-mesh">
-        <div className="flex h-screen overflow-hidden">
-          <Sidebar />
-          <main className="flex-1 overflow-y-auto">
-            {children}
-          </main>
-        </div>
+        <AuthProvider>
+          <div className="flex h-screen overflow-hidden">
+            <Sidebar />
+            <main className="flex-1 overflow-y-auto">
+              {children}
+            </main>
+          </div>
+        </AuthProvider>
       </body>
     </html>
   );
