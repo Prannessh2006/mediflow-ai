@@ -55,7 +55,11 @@ async def upload_report(
             summary = response.text
         except Exception as e:
             print(f"[Upload] AI Error: {e}")
-            summary = f"Error analyzing report with AI: {e}"
+            error_str = str(e)
+            if "429" in error_str or "quota" in error_str.lower():
+                summary = "API Rate Limit Exceeded: The free tier of the AI model only allows a few requests per minute. Please wait about 30 seconds and try uploading again."
+            else:
+                summary = "Error analyzing report with AI. Please try again later."
     else:
         # Fallback if no API key
         time.sleep(random.uniform(0.3, 0.7))
