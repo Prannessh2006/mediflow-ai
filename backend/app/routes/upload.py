@@ -24,21 +24,42 @@ MOCK_SUMMARIES = [
 ]
 
 
+import os
+
 @upload_router.post("/upload-report")
 async def upload_report(
     file: UploadFile = File(...),
     patient_name: str = Form(default="Anonymous"),
     patient_email: str = Form(default=""),
 ):
-    # Read file (in demo mode, we don't actually store it)
+    # Read file content
     content = await file.read()
     file_size_kb = len(content) / 1024
 
-    # Simulate AI processing delay
-    time.sleep(random.uniform(0.3, 0.7))
-
-    # Generate mock AI summary
-    summary = random.choice(MOCK_SUMMARIES)
+    api_key = os.getenv("GEMINI_API_KEY")
+    if api_key:
+        import google.generativeai as genai
+        genai.configure(api_key=api_key)
+        model = genai.GenerativeModel('gemini-2.5-flash')
+        
+        prompt = "You are a medical assistant AI. Analyze this medical report, prescription, or image and summarize the key findings in 2-4 clear sentences. Do not give any medical advice or diagnoses of your own, just extract and summarize what is on the document."
+        
+        try:
+            response = model.generate_content([
+                prompt,
+                {
+                    "mime_type": file.content_type or "image/jpeg",
+                    "data": content
+                }
+            ])
+            summary = response.text
+        except Exception as e:
+            print(f"[Upload] AI Error: {e}")
+            summary = f"Error analyzing report with AI: {e}"
+    else:
+        # Fallback if no API key
+        time.sleep(random.uniform(0.3, 0.7))
+        summary = random.choice(MOCK_SUMMARIES)
 
     record = db.create_report({
         "patient_name": patient_name,
