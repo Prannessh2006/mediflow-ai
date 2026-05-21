@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
       await signInWithPopup(auth, googleProvider);
     } catch (error: any) {
       console.error("Login failed", error);
-      setLoginError("Failed to sign in. Please try again.");
+      setLoginError(`Login Error: ${error.message}`);
     }
   };
 
