@@ -207,34 +207,19 @@ export function Sidebar() {
                 justifyContent: "center",
                 gap: "6px",
                 cursor: "pointer",
+                transition: "all 0.2s"
+              }}
+              onMouseOver={(e) => {
+                e.currentTarget.style.background = "rgba(255, 0, 0, 0.2)";
+              }}
+              onMouseOut={(e) => {
+                e.currentTarget.style.background = "rgba(255, 0, 0, 0.1)";
               }}
             >
               <LogOut size={14} /> Sign Out
             </button>
           </div>
-        ) : (
-          <button
-            onClick={handleSignIn}
-            style={{
-              width: "100%",
-              padding: "12px",
-              background: "linear-gradient(135deg, #00D4FF, #7C3AED)",
-              border: "none",
-              borderRadius: "8px",
-              color: "#fff",
-              fontSize: "13px",
-              fontWeight: 600,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              cursor: "pointer",
-              boxShadow: "0 4px 12px rgba(124, 58, 237, 0.3)",
-            }}
-          >
-            <LogIn size={16} /> Sign In with Google
-          </button>
-        )}
+        ) : null}
       </div>
     </aside>
   );
