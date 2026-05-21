@@ -5,10 +5,17 @@ import firebase_admin
 from firebase_admin import credentials, auth
 from dataclasses import dataclass
 
+import json
+
 # Initialize Firebase Admin if not already initialized
 if not firebase_admin._apps:
     try:
-        cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "..", "firebase-service-account.json"))
+        env_cred = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
+        if env_cred:
+            cred_dict = json.loads(env_cred)
+            cred = credentials.Certificate(cred_dict)
+        else:
+            cred = credentials.Certificate(os.path.join(os.path.dirname(__file__), "..", "firebase-service-account.json"))
         firebase_admin.initialize_app(cred)
     except Exception as e:
         print(f"Warning: Failed to initialize Firebase Admin SDK: {e}")
