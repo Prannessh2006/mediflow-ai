@@ -4,45 +4,23 @@ import os
 import random
 from typing import List
 
+try:
+    from sentence_transformers import SentenceTransformer
+    _model = SentenceTransformer("all-MiniLM-L6-v2")
+except ImportError:
+    _model = None
+    print("[Embeddings] Warning: sentence-transformers not installed. Using mock embeddings.")
+
 def get_embedding(text: str) -> List[float]:
-
-    api_key = os.getenv("GEMINI_API_KEY", "")
-    if not api_key:
-
-        random.seed(hash(text) % (2**32))
-        return [random.uniform(-1, 1) for _ in range(3072)]
-
-    try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-        result = genai.embed_content(
-            model="models/gemini-embedding-2",
-            content=text,
-            task_type="retrieval_document",
-        )
-        return result["embedding"]
-    except Exception as e:
-        print(f"[Embeddings] Gemini error, using mock: {e}")
-        random.seed(hash(text) % (2**32))
-        return [random.uniform(-1, 1) for _ in range(3072)]
+    if _model is not None:
+        return _model.encode(text).tolist()
+    
+    random.seed(hash(text) % (2**32))
+    return [random.uniform(-1, 1) for _ in range(384)]
 
 def get_query_embedding(text: str) -> List[float]:
-
-    api_key = os.getenv("GEMINI_API_KEY", "")
-    if not api_key:
-        random.seed(hash(text) % (2**32))
-        return [random.uniform(-1, 1) for _ in range(3072)]
-
-    try:
-        import google.generativeai as genai
-        genai.configure(api_key=api_key)
-        result = genai.embed_content(
-            model="models/gemini-embedding-2",
-            content=text,
-            task_type="retrieval_query",
-        )
-        return result["embedding"]
-    except Exception as e:
-        print(f"[Embeddings] Query embedding error, using mock: {e}")
-        random.seed(hash(text) % (2**32))
-        return [random.uniform(-1, 1) for _ in range(3072)]
+    if _model is not None:
+        return _model.encode(text).tolist()
+    
+    random.seed(hash(text) % (2**32))
+    return [random.uniform(-1, 1) for _ in range(384)]
