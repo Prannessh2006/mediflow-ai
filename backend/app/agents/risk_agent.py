@@ -1,7 +1,4 @@
-"""
-Risk Escalation Agent
-Detects high-risk emergency symptoms and flags cases for escalation.
-"""
+
 
 import os
 import re
@@ -9,7 +6,6 @@ import time
 import random
 from typing import Tuple, Dict
 
-# High-risk emergency patterns
 _HIGH_RISK_PATTERNS = [
     r"\bchest\s*pain\b",
     r"\bcan'?t\s+breathe\b",
@@ -31,7 +27,6 @@ _HIGH_RISK_PATTERNS = [
     r"\bcollapsed?\b",
 ]
 
-# Medium-risk patterns
 _MEDIUM_RISK_PATTERNS = [
     r"\bhigh\s+fever\b",
     r"\bfever\s+(of\s+)?(103|104|105|106)\b",
@@ -44,7 +39,6 @@ _MEDIUM_RISK_PATTERNS = [
     r"\binfection\b",
     r"\bwound\b",
 ]
-
 
 def _keyword_risk(query: str) -> Dict:
     q = query.lower()
@@ -63,7 +57,6 @@ def _keyword_risk(query: str) -> Dict:
                 "reason": f"Concerning symptom detected: '{re.search(pattern, q).group()}'",
             }
     return {"risk_level": "LOW", "escalate": False, "reason": "No significant risk detected"}
-
 
 def _gemini_risk(query: str) -> Dict:
     try:
@@ -98,14 +91,10 @@ LOW = routine query"""
     except Exception:
         return _keyword_risk(query)
 
-
 def run_risk_agent(query: str, intent: str) -> Tuple[Dict, int]:
-    """
-    Returns (risk_result_dict, duration_ms)
-    risk_result_dict = { risk_level, escalate, reason }
-    """
+
     start = time.time()
-    # If already classified as emergency, fast-track
+
     if intent == "emergency_symptom":
         time.sleep(random.uniform(0.05, 0.10))
         result = {

@@ -11,7 +11,6 @@ const firebaseConfig = {
   measurementId: "G-WW73CYQ395"
 };
 
-// Initialize Firebase (prevent multiple initializations in Next.js)
 const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();

@@ -7,7 +7,6 @@ from dataclasses import dataclass
 
 import json
 
-# Initialize Firebase Admin if not already initialized
 if not firebase_admin._apps:
     try:
         env_cred = os.getenv("FIREBASE_SERVICE_ACCOUNT_JSON")
@@ -29,7 +28,7 @@ class User:
     name: str
 
 async def get_current_user(credentials: HTTPAuthorizationCredentials = Security(security)) -> User:
-    """FastAPI Dependency to get the current authenticated user via Firebase."""
+
     if not credentials:
         raise HTTPException(status_code=401, detail="Not authenticated. Missing Bearer Token.")
 

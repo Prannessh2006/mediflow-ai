@@ -3,9 +3,6 @@ from typing import Optional, List, Any
 from datetime import datetime
 import uuid
 
-
-# ─── Chat ───────────────────────────────────────────────────────────────────
-
 class ChatRequest(BaseModel):
     query: str
     patient_name: Optional[str] = "Anonymous"
@@ -13,7 +10,7 @@ class ChatRequest(BaseModel):
 
 class AgentTraceStep(BaseModel):
     agent: str
-    status: str  # "completed" | "processing" | "skipped" | "error"
+    status: str
     output: Optional[Any] = None
     duration_ms: Optional[int] = None
 
@@ -27,15 +24,12 @@ class ChatResponse(BaseModel):
     appointment_data: Optional[dict] = None
     rag_context_used: bool = False
 
-
-# ─── Appointments ────────────────────────────────────────────────────────────
-
 class AppointmentCreate(BaseModel):
     patient_name: str
     patient_email: Optional[str] = None
     patient_phone: Optional[str] = None
     doctor_name: str
-    appointment_date: str   # ISO string
+    appointment_date: str
     notes: Optional[str] = None
 
 class AppointmentUpdate(BaseModel):
@@ -53,9 +47,6 @@ class Appointment(BaseModel):
     notes: Optional[str] = None
     created_at: str
 
-
-# ─── Reports ─────────────────────────────────────────────────────────────────
-
 class ReportUpload(BaseModel):
     patient_name: str
     patient_email: Optional[str] = None
@@ -70,9 +61,6 @@ class Report(BaseModel):
     file_url: Optional[str]
     extracted_summary: Optional[str]
     created_at: str
-
-
-# ─── Escalations ─────────────────────────────────────────────────────────────
 
 class EscalationCreate(BaseModel):
     patient_name: str
@@ -90,10 +78,7 @@ class Escalation(BaseModel):
     created_at: str
 
 class EscalationUpdate(BaseModel):
-    status: str  # "open" | "reviewed" | "resolved"
-
-
-# ─── Admin Stats ──────────────────────────────────────────────────────────────
+    status: str
 
 class AdminStats(BaseModel):
     appointments_today: int

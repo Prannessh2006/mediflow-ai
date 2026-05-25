@@ -47,9 +47,7 @@ export default function AdminPage() {
       const [s, e] = await Promise.all([adminApi.stats(), adminApi.escalations()]);
       setStats(s);
       setEscalations(e);
-    } catch {
-      // Use mock data
-    } finally {
+    } catch  finally {
       setRefreshing(false);
     }
   };
@@ -57,7 +55,7 @@ export default function AdminPage() {
   const updateEscalation = async (id: string, status: string) => {
     try {
       await adminApi.updateEscalation(id, status);
-    } catch {}
+    } catch 
     setEscalations((prev) =>
       prev.map((e) => (e.id === id ? { ...e, status: status as Escalation["status"] } : e))
     );
@@ -78,7 +76,7 @@ export default function AdminPage() {
 
   return (
     <div style={{ padding: "32px", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Header */}
+      
       <div
         className="animate-fade-in-up"
         style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}
@@ -97,7 +95,6 @@ export default function AdminPage() {
         </button>
       </div>
 
-      {/* Stats Grid */}
       <div
         style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "14px", marginBottom: "28px" }}
       >
@@ -126,9 +123,8 @@ export default function AdminPage() {
         ))}
       </div>
 
-      {/* Main Content Grid */}
       <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "20px" }}>
-        {/* Escalations */}
+        
         <div>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "14px" }}>
             <h2 style={{ fontSize: "15px", fontWeight: 600, color: "#F0F4FF", margin: 0, display: "flex", alignItems: "center", gap: "8px" }}>
@@ -201,9 +197,8 @@ export default function AdminPage() {
           </div>
         </div>
 
-        {/* Right Column */}
         <div style={{ display: "flex", flexDirection: "column", gap: "18px" }}>
-          {/* Agent Activity Log */}
+          
           <div className="glass-card-static" style={{ padding: "20px" }}>
             <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#F0F4FF", margin: "0 0 16px", display: "flex", alignItems: "center", gap: "8px" }}>
               <MessageSquare size={14} color="#8B9BC8" /> AI Activity Log
@@ -228,7 +223,6 @@ export default function AdminPage() {
             </div>
           </div>
 
-          {/* Quick Stats */}
           <div className="glass-card-static" style={{ padding: "20px" }}>
             <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#F0F4FF", margin: "0 0 14px", display: "flex", alignItems: "center", gap: "8px" }}>
               <TrendingUp size={14} color="#8B9BC8" /> Today's Performance

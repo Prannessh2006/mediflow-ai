@@ -1,7 +1,4 @@
-"""
-LangGraph Multi-Agent Workflow
-Defines the 6-node directed graph for MediFlow AI patient query processing.
-"""
+
 
 from typing import TypedDict, Optional, List, Any, Dict
 from langgraph.graph import StateGraph, END
@@ -14,17 +11,13 @@ from app.agents.validator_agent import run_validator_agent
 from app.agents.response_agent import run_response_agent
 from app.database.supabase import db
 
-
-# ─── Workflow State ───────────────────────────────────────────────────────────
-
 class WorkflowState(TypedDict):
-    # Input
+
     query: str
     patient_name: str
     user_id: str
     session_id: str
 
-    # Agent outputs
     intent: Optional[str]
     risk_level: Optional[str]
     escalate: Optional[bool]
@@ -36,11 +29,7 @@ class WorkflowState(TypedDict):
     validation_result: Optional[Dict]
     final_response: Optional[str]
 
-    # Trace
     agent_trace: List[Dict]
-
-
-# ─── Agent Nodes ──────────────────────────────────────────────────────────────
 
 def classifier_node(state: WorkflowState) -> WorkflowState:
     intent, duration = run_classifier(state["query"])
@@ -52,7 +41,6 @@ def classifier_node(state: WorkflowState) -> WorkflowState:
         "duration_ms": duration,
     })
     return state
-
 
 def risk_node(state: WorkflowState) -> WorkflowState:
     risk_result, duration = run_risk_agent(state["query"], state["intent"])
@@ -66,7 +54,6 @@ def risk_node(state: WorkflowState) -> WorkflowState:
         "duration_ms": duration,
     })
 
-    # Save escalation to DB if high risk
     if risk_result["escalate"]:
         db.create_escalation({
             "patient_name": state["patient_name"],
@@ -76,7 +63,6 @@ def risk_node(state: WorkflowState) -> WorkflowState:
         })
 
     return state
-
 
 def rag_node(state: WorkflowState) -> WorkflowState:
     chunks, used_real, duration = run_rag_agent(state["query"], state["intent"])
@@ -93,7 +79,6 @@ def rag_node(state: WorkflowState) -> WorkflowState:
     })
     return state
 
-
 def appointment_node(state: WorkflowState) -> WorkflowState:
     appt_data, duration = run_appointment_agent(
         state["query"], state["intent"], state["patient_name"], state["user_id"]
@@ -106,7 +91,6 @@ def appointment_node(state: WorkflowState) -> WorkflowState:
         "duration_ms": duration,
     })
     return state
-
 
 def response_node(state: WorkflowState) -> WorkflowState:
     response_draft, duration = run_response_agent(
@@ -124,7 +108,6 @@ def response_node(state: WorkflowState) -> WorkflowState:
         "duration_ms": duration,
     })
     return state
-
 
 def validator_node(state: WorkflowState) -> WorkflowState:
     val_result, duration = run_validator_agent(
@@ -146,7 +129,6 @@ def validator_node(state: WorkflowState) -> WorkflowState:
         "duration_ms": duration,
     })
 
-    # Log to DB
     db.create_chat_log({
         "session_id": state["session_id"],
         "patient_name": state["patient_name"],
@@ -159,13 +141,9 @@ def validator_node(state: WorkflowState) -> WorkflowState:
 
     return state
 
-
-# ─── Build Graph ──────────────────────────────────────────────────────────────
-
 def build_workflow() -> StateGraph:
     graph = StateGraph(WorkflowState)
 
-    # Add nodes
     graph.add_node("classifier", classifier_node)
     graph.add_node("risk_evaluator", risk_node)
     graph.add_node("rag_retrieval", rag_node)
@@ -173,7 +151,6 @@ def build_workflow() -> StateGraph:
     graph.add_node("response_writer", response_node)
     graph.add_node("validator", validator_node)
 
-    # Linear flow
     graph.set_entry_point("classifier")
     graph.add_edge("classifier", "risk_evaluator")
     graph.add_edge("risk_evaluator", "rag_retrieval")
@@ -184,13 +161,10 @@ def build_workflow() -> StateGraph:
 
     return graph.compile()
 
-
-# Compile once at import time
 workflow = build_workflow()
 
-
 def run_workflow(query: str, patient_name: str, user_id: str, session_id: str) -> WorkflowState:
-    """Entry point: runs the full 6-agent pipeline."""
+
     initial_state: WorkflowState = {
         "query": query,
         "patient_name": patient_name,

@@ -1,6 +1,4 @@
-"""
-FastAPI main entry point for MediFlow AI Backend.
-"""
+
 
 import os
 from fastapi import FastAPI
@@ -11,8 +9,6 @@ from app.routes.chat import router as chat_router
 from app.routes.appointments import router as appointments_router
 from app.routes.upload import upload_router, admin_router
 
-# ─── App Init ─────────────────────────────────────────────────────────────────
-
 app = FastAPI(
     title="MediFlow AI Backend",
     description="Multi-Agent Clinic Operations & Patient Workflow Assistant API",
@@ -21,8 +17,6 @@ app = FastAPI(
     redoc_url="/redoc",
 )
 
-# ─── CORS ─────────────────────────────────────────────────────────────────────
-
 ALLOWED_ORIGINS = os.getenv(
     "ALLOWED_ORIGINS",
     "http://localhost:3000,http://localhost:3001"
@@ -30,20 +24,16 @@ ALLOWED_ORIGINS = os.getenv(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Open for all frontends (Vercel)
+    allow_origins=["*"],
     allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-# ─── Routes ───────────────────────────────────────────────────────────────────
-
 app.include_router(chat_router)
 app.include_router(appointments_router)
 app.include_router(upload_router)
 app.include_router(admin_router)
-
-# ─── Health Check ─────────────────────────────────────────────────────────────
 
 @app.get("/health")
 async def health():
@@ -61,7 +51,6 @@ async def health():
             "Validator",
         ],
     }
-
 
 @app.get("/")
 async def root():

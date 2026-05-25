@@ -1,8 +1,4 @@
-"""
-RAG Ingest Pipeline
-Reads clinic documents, chunks them, embeds with Gemini, and stores in Pinecone.
-Run this once to populate the vector database: python -m app.rag.ingest
-"""
+
 
 import os
 import re
@@ -10,12 +6,11 @@ from pathlib import Path
 from typing import List, Dict
 
 DOCUMENTS_DIR = Path(__file__).parent.parent.parent / "documents"
-CHUNK_SIZE = 500       # characters per chunk
-CHUNK_OVERLAP = 80     # overlap between chunks
-
+CHUNK_SIZE = 500
+CHUNK_OVERLAP = 80
 
 def load_documents(docs_dir: Path) -> List[Dict]:
-    """Reads all .txt and .md files from the documents directory."""
+
     docs = []
     for ext in ("*.txt", "*.md"):
         for path in docs_dir.glob(ext):
@@ -24,10 +19,8 @@ def load_documents(docs_dir: Path) -> List[Dict]:
     print(f"[Ingest] Loaded {len(docs)} documents from {docs_dir}")
     return docs
 
-
 def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVERLAP) -> List[str]:
-    """Splits text into overlapping chunks."""
-    # Split on paragraphs first, then by size
+
     paragraphs = re.split(r"\n{2,}", text.strip())
     chunks = []
     current = ""
@@ -41,10 +34,10 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
         else:
             if current:
                 chunks.append(current)
-                # Overlap: keep last `overlap` chars
+
                 current = current[-overlap:] + "\n\n" + para if overlap else para
             else:
-                # Para itself is too large — hard split
+
                 for i in range(0, len(para), chunk_size - overlap):
                     chunks.append(para[i : i + chunk_size])
                 current = ""
@@ -54,9 +47,7 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
 
     return chunks
 
-
 def ingest_to_pinecone(docs_dir: Path = DOCUMENTS_DIR):
-    """Full ingestion pipeline: load → chunk → embed → upsert to Pinecone."""
 
     api_key = os.getenv("GEMINI_API_KEY", "")
     pinecone_key = os.getenv("PINECONE_API_KEY", "")
@@ -74,7 +65,6 @@ def ingest_to_pinecone(docs_dir: Path = DOCUMENTS_DIR):
     genai.configure(api_key=api_key)
     pc = Pinecone(api_key=pinecone_key)
 
-    # Create index if needed
     existing = [i.name for i in pc.list_indexes()]
     if index_name not in existing:
         pc.create_index(
@@ -110,14 +100,12 @@ def ingest_to_pinecone(docs_dir: Path = DOCUMENTS_DIR):
                 },
             })
 
-    # Upsert in batches of 100
     batch_size = 100
     for i in range(0, len(vectors), batch_size):
         index.upsert(vectors=vectors[i : i + batch_size])
         print(f"[Ingest] Upserted batch {i // batch_size + 1}")
 
     print(f"[Ingest] ✅ Done! {len(vectors)} vectors stored in Pinecone index '{index_name}'")
-
 
 if __name__ == "__main__":
     from dotenv import load_dotenv

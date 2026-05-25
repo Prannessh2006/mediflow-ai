@@ -1,7 +1,4 @@
-"""
-Appointment Routing Agent
-Handles appointment booking, rescheduling, and cancellation.
-"""
+
 
 import os
 import re
@@ -21,19 +18,16 @@ DOCTORS = [
     "Dr. Ravi Kumar (Pediatrician)",
 ]
 
-
 def _extract_appointment_info(query: str, intent: str, patient_name: str) -> Dict:
-    """Extracts appointment details from a natural language query."""
+
     q = query.lower()
 
-    # Determine action
     action = "book"
     if intent == "appointment_cancellation" or "cancel" in q:
         action = "cancel"
     elif intent == "appointment_reschedule" or any(w in q for w in ["reschedule", "change", "move", "postpone"]):
         action = "reschedule"
 
-    # Try to extract doctor preference
     doctor = None
     for d in DOCTORS:
         name = d.split("(")[0].strip().lower()
@@ -41,7 +35,6 @@ def _extract_appointment_info(query: str, intent: str, patient_name: str) -> Dic
             doctor = d
             break
 
-    # Detect specialty preference
     if not doctor:
         if any(w in q for w in ["heart", "cardiac", "cardio"]):
             doctor = "Dr. Arun Kapoor (Cardiologist)"
@@ -56,7 +49,6 @@ def _extract_appointment_info(query: str, intent: str, patient_name: str) -> Dic
         else:
             doctor = "Dr. Priya Mehta (General Physician)"
 
-    # Extract date
     date_str = None
     from datetime import timedelta
     today = datetime.now(timezone.utc)
@@ -75,7 +67,7 @@ def _extract_appointment_info(query: str, intent: str, patient_name: str) -> Dic
     elif "friday" in q:
         date_str = (today + timedelta(days=(4 - today.weekday()) % 7 or 7)).strftime("%Y-%m-%dT10:00:00Z")
     else:
-        # Default to next available slot
+
         date_str = (today + timedelta(days=2)).strftime("%Y-%m-%dT10:30:00Z")
 
     return {
@@ -85,17 +77,13 @@ def _extract_appointment_info(query: str, intent: str, patient_name: str) -> Dic
         "patient_name": patient_name,
     }
 
-
 def run_appointment_agent(
     query: str,
     intent: str,
     patient_name: str,
     user_id: str,
 ) -> Tuple[Optional[Dict], int]:
-    """
-    Returns (appointment_data, duration_ms)
-    appointment_data = None if intent not appointment-related
-    """
+
     start = time.time()
 
     appointment_intents = {

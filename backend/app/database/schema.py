@@ -1,7 +1,4 @@
-"""
-Supabase Schema — MediFlow AI
-Run this SQL in your Supabase dashboard → SQL Editor to set up all tables.
-"""
+
 
 SCHEMA_SQL = """
 -- Enable UUID extension

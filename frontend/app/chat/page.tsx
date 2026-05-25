@@ -71,10 +71,9 @@ export default function ChatPage() {
     let response: ChatResponse | null = null;
 
     try {
-      // Kick off the real API call
+      
       const promise = chatApi.send(query, patientName);
 
-      // Show fake progressive loading (each ~200ms)
       for (let i = 0; i < agentNames.length - 1; i++) {
         await new Promise((r) => setTimeout(r, 180));
         setLiveTrace((prev) => [
@@ -82,7 +81,7 @@ export default function ChatPage() {
           {
             agent: agentNames[i],
             status: "completed",
-            output: {},
+            output: ,
             duration_ms: Math.floor(Math.random() * 120) + 30,
           },
         ]);
@@ -90,7 +89,6 @@ export default function ChatPage() {
 
       response = await promise;
 
-      // Use real trace from API
       setLiveTrace(response.agent_trace);
 
       const aiMsg: Message = {
@@ -108,7 +106,7 @@ export default function ChatPage() {
     } catch (err: any) {
       console.error("API Error details:", err);
       console.error("Response:", err.response?.data);
-      // Demo fallback when backend isn't running
+      
       const fallbackTrace = agentNames.map((name, i) => ({
         agent: name,
         status: "completed" as const,
@@ -148,9 +146,9 @@ export default function ChatPage() {
 
   return (
     <div style={{ display: "flex", height: "100vh", overflow: "hidden" }}>
-      {/* Chat Area */}
+      
       <div style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
-        {/* Header */}
+        
         <div
           style={{
             padding: "20px 24px",
@@ -207,7 +205,6 @@ export default function ChatPage() {
           </div>
         </div>
 
-        {/* Messages */}
         <div
           style={{
             flex: 1,
@@ -246,7 +243,6 @@ export default function ChatPage() {
                 Ask about appointments, clinic policies, reports, or any health questions.
               </p>
 
-              {/* Suggested queries */}
               <div style={{ display: "flex", flexWrap: "wrap", gap: "8px", justifyContent: "center", maxWidth: "500px", margin: "0 auto" }}>
                 {SUGGESTED_QUERIES.map((q, i) => (
                   <button
@@ -354,7 +350,6 @@ export default function ChatPage() {
             </div>
           ))}
 
-          {/* Loading indicator */}
           {isLoading && (
             <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
               <div style={{
@@ -384,7 +379,6 @@ export default function ChatPage() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Input Area */}
         <div
           style={{
             padding: "16px 24px",
@@ -421,7 +415,6 @@ export default function ChatPage() {
         </div>
       </div>
 
-      {/* Trace Panel */}
       {showTrace && (
         <div
           style={{

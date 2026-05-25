@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  // Allow images from any source in demo mode
+  
   images: {
     remotePatterns: [{ protocol: "https", hostname: "**" }],
   },

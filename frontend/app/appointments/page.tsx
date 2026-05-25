@@ -108,7 +108,7 @@ export default function AppointmentsPage() {
   const updateStatus = async (id: string, status: string) => {
     try {
       await appointmentsApi.update(id, { status });
-    } catch {}
+    } catch 
     setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: status as Appointment["status"] } : a)));
   };
 
@@ -119,7 +119,7 @@ export default function AppointmentsPage() {
 
   return (
     <div style={{ padding: "32px", maxWidth: "1100px", margin: "0 auto" }}>
-      {/* Header */}
+      
       <div className="animate-fade-in-up" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "32px" }}>
         <div>
           <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#F0F4FF", margin: 0 }}>Appointments</h1>
@@ -132,7 +132,6 @@ export default function AppointmentsPage() {
         </button>
       </div>
 
-      {/* Success toast */}
       {success && (
         <div className="animate-fade-in" style={{
           padding: "12px 16px", borderRadius: "10px", marginBottom: "20px",
@@ -144,7 +143,6 @@ export default function AppointmentsPage() {
         </div>
       )}
 
-      {/* Book Form Modal */}
       {showForm && (
         <div style={{
           position: "fixed", inset: 0, zIndex: 50,
@@ -211,7 +209,6 @@ export default function AppointmentsPage() {
         </div>
       )}
 
-      {/* Appointments List */}
       {loading ? (
         <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
           {[1, 2, 3].map((i) => <div key={i} className="skeleton" style={{ height: "96px" }} />)}

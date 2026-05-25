@@ -1,15 +1,9 @@
-"""
-Supabase database client with FULL MOCK FALLBACK.
-When SUPABASE_URL / SUPABASE_KEY are not set, all operations
-use in-memory storage so the app runs locally without any credentials.
-"""
+
 
 import os
 import uuid
 from datetime import datetime, timezone
 from typing import Optional, List, Dict, Any
-
-# ─── In-Memory Mock Store ─────────────────────────────────────────────────────
 
 _mock_appointments: List[Dict] = [
     {
@@ -87,13 +81,8 @@ _mock_reports: List[Dict] = [
 
 _mock_chat_logs: List[Dict] = []
 
-
-# ─── Mock DB Class ────────────────────────────────────────────────────────────
-
 class MockDatabase:
-    """In-memory database for demo mode (no Supabase credentials required)."""
 
-    # Appointments
     def get_appointments(self) -> List[Dict]:
         return list(_mock_appointments)
 
@@ -124,7 +113,6 @@ class MockDatabase:
         today = datetime.now(timezone.utc).date().isoformat()
         return sum(1 for a in _mock_appointments if a["appointment_date"].startswith(today))
 
-    # Escalations
     def get_escalations(self) -> List[Dict]:
         return sorted(_mock_escalations, key=lambda x: x["created_at"], reverse=True)
 
@@ -148,7 +136,6 @@ class MockDatabase:
     def get_high_risk_count(self) -> int:
         return sum(1 for e in _mock_escalations if e["risk_level"] == "HIGH" and e["status"] == "open")
 
-    # Reports
     def get_reports(self) -> List[Dict]:
         return list(_mock_reports)
 
@@ -164,7 +151,6 @@ class MockDatabase:
         _mock_reports.append(record)
         return record
 
-    # Chat Logs
     def create_chat_log(self, data: Dict) -> Dict:
         record = {
             "id": f"log-{uuid.uuid4().hex[:6]}",
@@ -180,7 +166,6 @@ class MockDatabase:
     def get_chat_count_today(self) -> int:
         return len(_mock_chat_logs)
 
-    # Stats
     def get_admin_stats(self) -> Dict:
         return {
             "appointments_today": self.get_appointments_today() or 3,
@@ -189,9 +174,6 @@ class MockDatabase:
             "total_chats_today": max(self.get_chat_count_today(), 12),
             "resolved_escalations": sum(1 for e in _mock_escalations if e["status"] == "resolved"),
         }
-
-
-# ─── Supabase Client (real) ──────────────────────────────────────────────────
 
 def _try_supabase():
     url = os.getenv("SUPABASE_URL", "")
@@ -204,15 +186,11 @@ def _try_supabase():
     except Exception:
         return None
 
-
-# ─── Public Interface ─────────────────────────────────────────────────────────
-
 _supabase_client = _try_supabase()
 _mock_db = MockDatabase()
 
 def get_db() -> MockDatabase:
-    """Returns mock DB always (swap with Supabase adapter when keys are ready)."""
+
     return _mock_db
 
-# Convenience alias
 db = get_db()

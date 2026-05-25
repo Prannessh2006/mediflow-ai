@@ -1,7 +1,3 @@
-/**
- * MediFlow AI — API Client
- * Connects frontend to FastAPI backend
- */
 
 import axios from "axios";
 import { auth } from "./firebase";
@@ -14,7 +10,6 @@ export const api = axios.create({
   timeout: 30000,
 });
 
-// Intercept requests and attach Firebase auth token if logged in
 api.interceptors.request.use(async (config) => {
   if (auth.currentUser) {
     const token = await auth.currentUser.getIdToken();
@@ -22,8 +17,6 @@ api.interceptors.request.use(async (config) => {
   }
   return config;
 }, (error) => Promise.reject(error));
-
-// ── Types ─────────────────────────────────────────────────────────────────────
 
 export interface AgentTraceStep {
   agent: string;
@@ -80,8 +73,6 @@ export interface Report {
   extracted_summary?: string;
   created_at: string;
 }
-
-// ── API Functions ──────────────────────────────────────────────────────────────
 
 export const chatApi = {
   send: async (query: string, patientName = "Anonymous") => {

@@ -1,4 +1,4 @@
-"""FastAPI routes: /upload-report and /admin"""
+
 
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form
 from typing import List, Optional
@@ -10,9 +10,6 @@ from app.database.models import EscalationUpdate, AdminStats
 
 upload_router = APIRouter()
 admin_router = APIRouter(prefix="/admin")
-
-
-# ─── Report Upload ────────────────────────────────────────────────────────────
 
 MOCK_SUMMARIES = [
     "Blood glucose levels slightly elevated (112 mg/dL fasting). HbA1c within normal range at 5.8%. Recommend dietary changes and follow-up in 3 months.",
@@ -35,7 +32,7 @@ async def upload_report(
     patient_email: str = Form(default=""),
     user: User = Depends(get_current_user),
 ):
-    # Read file content
+
     content = await file.read()
     file_size_kb = len(content) / 1024
 
@@ -44,9 +41,9 @@ async def upload_report(
         import google.generativeai as genai
         genai.configure(api_key=api_key)
         model = genai.GenerativeModel('gemini-2.5-flash')
-        
+
         prompt = "You are a medical assistant AI. Analyze this medical report, prescription, or image and summarize the key findings in 2-4 clear sentences. Do not give any medical advice or diagnoses of your own, just extract and summarize what is on the document."
-        
+
         try:
             response = model.generate_content([
                 prompt,
@@ -64,7 +61,7 @@ async def upload_report(
             else:
                 summary = "Error analyzing report with AI. Please try again later."
     else:
-        # Fallback if no API key
+
         time.sleep(random.uniform(0.3, 0.7))
         summary = random.choice(MOCK_SUMMARIES)
 
@@ -86,23 +83,17 @@ async def upload_report(
         "created_at": record["created_at"],
     }
 
-
 @upload_router.get("/reports")
 async def list_reports(user: User = Depends(get_current_user)):
     return db.get_user_reports(user.uid)
-
-
-# ─── Admin Routes ─────────────────────────────────────────────────────────────
 
 @admin_router.get("/stats")
 async def get_stats():
     return db.get_admin_stats()
 
-
 @admin_router.get("/escalations")
 async def get_escalations():
     return db.get_escalations()
-
 
 @admin_router.patch("/escalations/{escalation_id}")
 async def update_escalation(escalation_id: str, data: EscalationUpdate):
@@ -110,7 +101,6 @@ async def update_escalation(escalation_id: str, data: EscalationUpdate):
     if not record:
         raise HTTPException(status_code=404, detail="Escalation not found")
     return record
-
 
 @admin_router.get("/chat-logs")
 async def get_chat_logs():

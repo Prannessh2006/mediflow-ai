@@ -54,7 +54,7 @@ export default function ReportsPage() {
       setReports((prev) => [newReport, ...prev]);
       setSelectedReport(newReport);
     } catch {
-      // Demo fallback
+      
       const mockSummaries = [
         "Complete blood count shows hemoglobin at 12.4 g/dL (slightly low). White blood cell count normal. Platelets normal. Recommend iron supplementation.",
         "Chest X-ray: No active cardiopulmonary disease. Lung fields clear. Heart size within normal limits.",
@@ -86,7 +86,7 @@ export default function ReportsPage() {
 
   return (
     <div style={{ padding: "32px", maxWidth: "1100px", margin: "0 auto" }}>
-      {/* Header */}
+      
       <div className="animate-fade-in-up" style={{ marginBottom: "32px" }}>
         <h1 style={{ fontSize: "24px", fontWeight: 700, color: "#F0F4FF", margin: 0 }}>Medical Reports</h1>
         <p style={{ color: "#8B9BC8", margin: "4px 0 0", fontSize: "14px" }}>
@@ -95,7 +95,7 @@ export default function ReportsPage() {
       </div>
 
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "24px" }}>
-        {/* Upload Panel */}
+        
         <div>
           <div className="glass-card-static" style={{ padding: "24px", marginBottom: "20px" }}>
             <h2 style={{ fontSize: "15px", fontWeight: 600, color: "#F0F4FF", marginBottom: "16px" }}>
@@ -114,7 +114,6 @@ export default function ReportsPage() {
               />
             </div>
 
-            {/* Drop Zone */}
             <div
               className={`upload-zone ${dragOver ? "drag-over" : ""}`}
               style={{ padding: "40px 20px", textAlign: "center" }}
@@ -189,7 +188,6 @@ export default function ReportsPage() {
             )}
           </div>
 
-          {/* Info Card */}
           <div className="glass-card-static" style={{ padding: "20px" }}>
             <div style={{ fontSize: "13px", fontWeight: 600, color: "#F0F4FF", marginBottom: "12px", display: "flex", alignItems: "center", gap: "8px" }}>
               <Brain size={14} color="#7C3AED" /> How AI Analysis Works
@@ -215,7 +213,6 @@ export default function ReportsPage() {
           </div>
         </div>
 
-        {/* Reports List */}
         <div>
           <h2 style={{ fontSize: "15px", fontWeight: 600, color: "#F0F4FF", marginBottom: "16px" }}>
             Uploaded Reports ({reports.length})
@@ -259,7 +256,6 @@ export default function ReportsPage() {
                   </div>
                 </div>
 
-                {/* Summary expansion */}
                 {selectedReport?.id === report.id && report.extracted_summary && (
                   <div className="animate-fade-in" style={{
                     marginTop: "14px", paddingTop: "14px",

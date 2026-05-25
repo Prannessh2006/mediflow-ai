@@ -1,4 +1,4 @@
-"""FastAPI route: /chat — runs the full LangGraph pipeline."""
+
 
 from fastapi import APIRouter, Depends
 from app.database.models import ChatRequest, ChatResponse, AgentTraceStep
@@ -6,7 +6,6 @@ from app.graph.workflow import run_workflow
 from app.auth import get_current_user, User
 
 router = APIRouter()
-
 
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest, user: User = Depends(get_current_user)):

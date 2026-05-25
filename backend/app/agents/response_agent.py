@@ -1,17 +1,10 @@
-"""
-Response Writer Agent
-Generates patient-friendly, well-formatted responses using Gemini.
-Falls back to intelligent template-based responses in demo mode.
-"""
+
 
 import os
 import time
 import random
 from typing import List, Optional, Dict, Tuple
 from datetime import datetime
-
-
-# ─── Template Responses (Demo Mode) ──────────────────────────────────────────
 
 def _format_appointment_response(appointment_data: Dict) -> str:
     if not appointment_data:
@@ -47,7 +40,6 @@ Arrive **15 minutes early** for registration. You will receive a confirmation SM
     elif action == "reschedule_requested":
         return "\n📅 **Reschedule Request**\n\nPlease call **+91-9876543210** to reschedule your appointment. Our team will find the next available slot for you."
     return ""
-
 
 _TEMPLATE_RESPONSES = {
     "clinic_policy": lambda ctx, q: f"""Here's the information you need about our clinic:
@@ -122,13 +114,11 @@ Please note that cancellations must be made **24 hours in advance** to avoid a �
 Would you like me to find available slots for a specific doctor or date?""",
 }
 
-
 def _template_response(query: str, intent: str, context: List[str], appointment_data: Optional[Dict]) -> str:
     appt_block = _format_appointment_response(appointment_data) if appointment_data else ""
     template_fn = _TEMPLATE_RESPONSES.get(intent, _TEMPLATE_RESPONSES["general_inquiry"])
     base = template_fn(context, query)
     return (appt_block + base).strip() if appt_block else base
-
 
 def _gemini_response(
     query: str,
@@ -168,7 +158,6 @@ Generate a helpful, empathetic, patient-friendly response in markdown format.
     except Exception:
         return _template_response(query, intent, context, appointment_data)
 
-
 def run_response_agent(
     query: str,
     intent: str,
@@ -176,9 +165,7 @@ def run_response_agent(
     risk_level: str,
     appointment_data: Optional[Dict],
 ) -> Tuple[str, int]:
-    """
-    Returns (response_text, duration_ms)
-    """
+
     start = time.time()
 
     api_key = os.getenv("GEMINI_API_KEY", "")

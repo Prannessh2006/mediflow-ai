@@ -66,12 +66,11 @@ export function WorkflowTrace({ steps, isLoading }: WorkflowTraceProps) {
               key={agentName}
               className={`trace-step ${isCompleted ? "completed" : isProcessing ? "processing" : ""}`}
             >
-              {/* Status dot */}
+              
               <div
                 className={`trace-dot ${isCompleted ? "completed" : isProcessing ? "processing" : "pending"}`}
               />
 
-              {/* Icon */}
               <div
                 style={{
                   width: 26,
@@ -95,7 +94,6 @@ export function WorkflowTrace({ steps, isLoading }: WorkflowTraceProps) {
                 )}
               </div>
 
-              {/* Content */}
               <div style={{ flex: 1, minWidth: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                   <span
@@ -118,7 +116,6 @@ export function WorkflowTrace({ steps, isLoading }: WorkflowTraceProps) {
                   )}
                 </div>
 
-                {/* Output summary */}
                 {isCompleted && step?.output && (
                   <div style={{ fontSize: "11px", color: "#4A5680", marginTop: "2px" }}>
                     {agentName === "Query Classifier" && (step.output as { intent?: string }).intent && (
@@ -164,7 +161,6 @@ export function WorkflowTrace({ steps, isLoading }: WorkflowTraceProps) {
                 )}
               </div>
 
-              {/* Status icon */}
               <div style={{ flexShrink: 0 }}>
                 {isCompleted ? (
                   <CheckCircle size={14} color="#10B981" />
@@ -177,7 +173,6 @@ export function WorkflowTrace({ steps, isLoading }: WorkflowTraceProps) {
         })}
       </div>
 
-      {/* Connector lines */}
       <style>{`
         @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
       `}</style>

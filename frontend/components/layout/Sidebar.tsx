@@ -61,7 +61,7 @@ export function Sidebar() {
         zIndex: 10,
       }}
     >
-      {/* Logo */}
+      
       <div style={{ padding: "8px 10px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
           <div
@@ -97,7 +97,6 @@ export function Sidebar() {
         </div>
       </div>
 
-      {/* Patient Section */}
       <div style={{ marginBottom: "8px" }}>
         <div
           style={{
@@ -134,7 +133,6 @@ export function Sidebar() {
           })}
       </div>
 
-      {/* Admin Section */}
       <div style={{ marginTop: "12px" }}>
         <div
           style={{
@@ -171,7 +169,6 @@ export function Sidebar() {
           })}
       </div>
 
-      {/* Bottom Auth & Status */}
       <div style={{ marginTop: "auto" }}>
         {loading ? (
           <div className="glass-card-static" style={{ padding: "12px 14px", opacity: 0.5 }}>Loading...</div>

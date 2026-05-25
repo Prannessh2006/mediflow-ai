@@ -1,8 +1,4 @@
-"""
-Query Classifier Agent
-Classifies patient intent into one of the supported categories.
-Uses Gemini if API key is available, otherwise uses fast keyword matching.
-"""
+
 
 import os
 import re
@@ -23,7 +19,6 @@ INTENT_LABELS = [
     "general_inquiry",
 ]
 
-# Keyword patterns for mock classification
 _PATTERNS = {
     "appointment_booking":      r"\b(book|schedule|reserve|want\s+an?\s+appointment|need\s+an?\s+appointment|fix\s+an?\s+appointment)\b",
     "appointment_cancellation": r"\b(cancel|cancellation|called\s+off|withdraw)\b",
@@ -36,17 +31,15 @@ _PATTERNS = {
     "appointment_inquiry":      r"\b(my\s+appointments?|appointments?\s+so\s+far|when\s+is\s+my\s+appointment|list\s+appointments?|show\s+appointments?)\b",
 }
 
-
 def _keyword_classify(query: str) -> str:
     q = query.lower()
-    # Emergency always takes priority
+
     if re.search(_PATTERNS["emergency_symptom"], q):
         return "emergency_symptom"
     for intent, pattern in _PATTERNS.items():
         if re.search(pattern, q):
             return intent
     return "general_inquiry"
-
 
 def _gemini_classify(query: str) -> str:
     try:
@@ -65,17 +58,14 @@ Reply with ONLY the category name, nothing else."""
     except Exception:
         return _keyword_classify(query)
 
-
 def run_classifier(query: str) -> Tuple[str, int]:
-    """
-    Returns (intent, duration_ms)
-    """
+
     start = time.time()
     api_key = os.getenv("GEMINI_API_KEY", "")
     if api_key:
         intent = _gemini_classify(query)
     else:
-        # Simulate slight processing delay for realism
+
         time.sleep(random.uniform(0.05, 0.15))
         intent = _keyword_classify(query)
     duration = int((time.time() - start) * 1000)

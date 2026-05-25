@@ -61,7 +61,7 @@ const agents = [
 export default function HomePage() {
   return (
     <div style={{ padding: "32px", maxWidth: "1200px", margin: "0 auto" }}>
-      {/* Header */}
+      
       <div className="animate-fade-in-up" style={{ marginBottom: "40px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "8px" }}>
           <div
@@ -97,7 +97,6 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Stats Bar */}
       <div
         className="animate-fade-in-up glass-card-static"
         style={{
@@ -151,7 +150,6 @@ export default function HomePage() {
         ))}
       </div>
 
-      {/* Quick Actions */}
       <div style={{ marginBottom: "32px" }}>
         <h2 style={{ fontSize: "16px", fontWeight: 600, color: "#F0F4FF", marginBottom: "16px" }}>
           Quick Actions
@@ -198,9 +196,8 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* Bottom Grid: Activity + Agents */}
       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "20px" }}>
-        {/* Recent Activity */}
+        
         <div className="glass-card-static" style={{ padding: "20px" }}>
           <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#F0F4FF", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
             <Clock size={14} color="#8B9BC8" /> Recent Activity
@@ -224,7 +221,6 @@ export default function HomePage() {
           </div>
         </div>
 
-        {/* Agent Status */}
         <div className="glass-card-static" style={{ padding: "20px" }}>
           <h3 style={{ fontSize: "14px", fontWeight: 600, color: "#F0F4FF", marginBottom: "16px", display: "flex", alignItems: "center", gap: "8px" }}>
             <Activity size={14} color="#8B9BC8" /> Agent Status

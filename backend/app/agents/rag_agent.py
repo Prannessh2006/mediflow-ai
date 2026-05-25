@@ -1,16 +1,9 @@
-"""
-RAG Retrieval Agent
-Retrieves relevant context from the clinic's knowledge base.
-Uses Pinecone + Gemini embeddings when keys are available.
-Falls back to a curated in-memory knowledge base for demo mode.
-"""
+
 
 import os
 import time
 import random
 from typing import Tuple, List, Dict
-
-# ─── In-Memory Knowledge Base (Demo Mode) ────────────────────────────────────
 
 CLINIC_KB = {
     "clinic_policy": [
@@ -57,17 +50,15 @@ CLINIC_KB = {
     ],
 }
 
-
 def _mock_rag_retrieve(query: str, intent: str) -> List[str]:
-    """Returns relevant knowledge base entries based on intent."""
+
     time.sleep(random.uniform(0.08, 0.20))
     kb_entries = CLINIC_KB.get(intent, CLINIC_KB["general_inquiry"])
-    # Return top 3 most relevant (in real RAG, these would be ranked by cosine similarity)
+
     return kb_entries[:3]
 
-
 def _pinecone_retrieve(query: str, intent: str) -> List[str]:
-    """Real Pinecone + Gemini embeddings retrieval."""
+
     try:
         import google.generativeai as genai
         from pinecone import Pinecone
@@ -76,7 +67,6 @@ def _pinecone_retrieve(query: str, intent: str) -> List[str]:
         pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
         index = pc.Index(os.environ.get("PINECONE_INDEX", "mediflow"))
 
-        # Generate embedding for query
         result = genai.embed_content(
             model="models/text-embedding-004",
             content=query,
@@ -84,7 +74,6 @@ def _pinecone_retrieve(query: str, intent: str) -> List[str]:
         )
         query_embedding = result["embedding"]
 
-        # Query Pinecone
         response = index.query(
             vector=query_embedding,
             top_k=5,
@@ -94,11 +83,8 @@ def _pinecone_retrieve(query: str, intent: str) -> List[str]:
     except Exception:
         return _mock_rag_retrieve(query, intent)
 
-
 def run_rag_agent(query: str, intent: str) -> Tuple[List[str], bool, int]:
-    """
-    Returns (context_chunks, used_real_rag, duration_ms)
-    """
+
     start = time.time()
     has_pinecone = bool(os.getenv("PINECONE_API_KEY", ""))
     has_gemini = bool(os.getenv("GEMINI_API_KEY", ""))
