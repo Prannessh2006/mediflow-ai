@@ -141,30 +141,43 @@ def validator_node(state: WorkflowState) -> WorkflowState:
 
     return state
 
+def build_data_gathering_subgraph() -> StateGraph:
+    subgraph = StateGraph(WorkflowState)
+    subgraph.add_node("rag_retrieval", rag_node)
+    subgraph.add_node("appointment_router", appointment_node)
+    subgraph.set_entry_point("rag_retrieval")
+    subgraph.add_edge("rag_retrieval", "appointment_router")
+    subgraph.add_edge("appointment_router", END)
+    return subgraph.compile()
+
+def build_response_generation_subgraph() -> StateGraph:
+    subgraph = StateGraph(WorkflowState)
+    subgraph.add_node("response_writer", response_node)
+    subgraph.add_node("validator", validator_node)
+    subgraph.set_entry_point("response_writer")
+    subgraph.add_edge("response_writer", "validator")
+    subgraph.add_edge("validator", END)
+    return subgraph.compile()
+
+data_gathering = build_data_gathering_subgraph()
+response_generation = build_response_generation_subgraph()
+
 def build_workflow() -> StateGraph:
     graph = StateGraph(WorkflowState)
-
     graph.add_node("classifier", classifier_node)
     graph.add_node("risk_evaluator", risk_node)
-    graph.add_node("rag_retrieval", rag_node)
-    graph.add_node("appointment_router", appointment_node)
-    graph.add_node("response_writer", response_node)
-    graph.add_node("validator", validator_node)
-
+    graph.add_node("data_gathering_subgraph", data_gathering)
+    graph.add_node("response_generation_subgraph", response_generation)
     graph.set_entry_point("classifier")
     graph.add_edge("classifier", "risk_evaluator")
-    graph.add_edge("risk_evaluator", "rag_retrieval")
-    graph.add_edge("rag_retrieval", "appointment_router")
-    graph.add_edge("appointment_router", "response_writer")
-    graph.add_edge("response_writer", "validator")
-    graph.add_edge("validator", END)
-
+    graph.add_edge("risk_evaluator", "data_gathering_subgraph")
+    graph.add_edge("data_gathering_subgraph", "response_generation_subgraph")
+    graph.add_edge("response_generation_subgraph", END)
     return graph.compile()
 
 workflow = build_workflow()
 
 def run_workflow(query: str, patient_name: str, user_id: str, session_id: str) -> WorkflowState:
-
     initial_state: WorkflowState = {
         "query": query,
         "patient_name": patient_name,
