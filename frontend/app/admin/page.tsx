@@ -47,7 +47,9 @@ export default function AdminPage() {
       const [s, e] = await Promise.all([adminApi.stats(), adminApi.escalations()]);
       setStats(s);
       setEscalations(e);
-    } catch  finally {
+    } catch (e) {
+      console.error(e);
+    } finally {
       setRefreshing(false);
     }
   };
@@ -55,7 +57,9 @@ export default function AdminPage() {
   const updateEscalation = async (id: string, status: string) => {
     try {
       await adminApi.updateEscalation(id, status);
-    } catch 
+    } catch (e) {
+      console.error(e);
+    }
     setEscalations((prev) =>
       prev.map((e) => (e.id === id ? { ...e, status: status as Escalation["status"] } : e))
     );

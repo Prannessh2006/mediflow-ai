@@ -81,7 +81,7 @@ export default function ChatPage() {
           {
             agent: agentNames[i],
             status: "completed",
-            output: ,
+            output: { status: "simulated" },
             duration_ms: Math.floor(Math.random() * 120) + 30,
           },
         ]);

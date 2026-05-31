@@ -108,7 +108,9 @@ export default function AppointmentsPage() {
   const updateStatus = async (id: string, status: string) => {
     try {
       await appointmentsApi.update(id, { status });
-    } catch 
+    } catch (e) {
+      console.error(e);
+    }
     setAppointments((prev) => prev.map((a) => (a.id === id ? { ...a, status: status as Appointment["status"] } : a)));
   };
 
