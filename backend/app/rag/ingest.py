@@ -48,29 +48,28 @@ def chunk_text(text: str, chunk_size: int = CHUNK_SIZE, overlap: int = CHUNK_OVE
     return chunks
 
 def ingest_to_pinecone(docs_dir: Path = DOCUMENTS_DIR):
+
+    api_key = os.getenv("GEMINI_API_KEY", "")
     pinecone_key = os.getenv("PINECONE_API_KEY", "")
     index_name = os.getenv("PINECONE_INDEX", "mediflow")
 
-    if not pinecone_key:
-        print("[Ingest] Missing PINECONE_API_KEY — skipping real ingest.")
+    if not api_key or not pinecone_key:
+        print("[Ingest] ⚠️  Missing GEMINI_API_KEY or PINECONE_API_KEY — skipping real ingest.")
+        print("[Ingest] In demo mode, the in-memory knowledge base is used instead.")
+        print("[Ingest] Add keys to .env to enable real RAG ingestion.")
         return
 
-    try:
-        from sentence_transformers import SentenceTransformer
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
-    except ImportError:
-        print("[Ingest] Missing sentence-transformers package. Skipping.")
-        return
-
+    import google.generativeai as genai
     from pinecone import Pinecone, ServerlessSpec
 
+    genai.configure(api_key=api_key)
     pc = Pinecone(api_key=pinecone_key)
 
     existing = [i.name for i in pc.list_indexes()]
     if index_name not in existing:
         pc.create_index(
             name=index_name,
-            dimension=384,
+            dimension=3072,
             metric="cosine",
             spec=ServerlessSpec(cloud="aws", region="us-east-1"),
         )
@@ -85,7 +84,12 @@ def ingest_to_pinecone(docs_dir: Path = DOCUMENTS_DIR):
         print(f"[Ingest] {doc['filename']}: {len(chunks)} chunks")
 
         for i, chunk in enumerate(chunks):
-            embedding = _model.encode(chunk).tolist()
+            result = genai.embed_content(
+                model="models/gemini-embedding-2",
+                content=chunk,
+                task_type="retrieval_document",
+            )
+            embedding = result["embedding"]
             vectors.append({
                 "id": f"{doc['filename']}_{i}",
                 "values": embedding,
@@ -101,7 +105,7 @@ def ingest_to_pinecone(docs_dir: Path = DOCUMENTS_DIR):
         index.upsert(vectors=vectors[i : i + batch_size])
         print(f"[Ingest] Upserted batch {i // batch_size + 1}")
 
-    print(f"[Ingest] Done! {len(vectors)} vectors stored in Pinecone index '{index_name}'")
+    print(f"[Ingest] ✅ Done! {len(vectors)} vectors stored in Pinecone index '{index_name}'")
 
 if __name__ == "__main__":
     from dotenv import load_dotenv

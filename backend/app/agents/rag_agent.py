@@ -58,15 +58,21 @@ def _mock_rag_retrieve(query: str, intent: str) -> List[str]:
     return kb_entries[:3]
 
 def _pinecone_retrieve(query: str, intent: str) -> List[str]:
-    try:
-        from pinecone import Pinecone
-        from sentence_transformers import SentenceTransformer
 
-        _model = SentenceTransformer("all-MiniLM-L6-v2")
+    try:
+        import google.generativeai as genai
+        from pinecone import Pinecone
+
+        genai.configure(api_key=os.environ["GEMINI_API_KEY"])
         pc = Pinecone(api_key=os.environ["PINECONE_API_KEY"])
         index = pc.Index(os.environ.get("PINECONE_INDEX", "mediflow"))
 
-        query_embedding = _model.encode(query).tolist()
+        result = genai.embed_content(
+            model="models/text-embedding-004",
+            content=query,
+            task_type="retrieval_query",
+        )
+        query_embedding = result["embedding"]
 
         response = index.query(
             vector=query_embedding,

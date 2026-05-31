@@ -7,8 +7,9 @@ langchain-core
 python-dotenv
 httpx
 
+# Optional: Only needed with real API keys
 google-generativeai
 pinecone
 supabase
+
 firebase-admin==6.4.0
-sentence-transformers
