@@ -152,12 +152,11 @@ export default function ChatPage() {
         <div
           style={{
             padding: "20px 24px",
-            borderBottom: "1px solid rgba(255,255,255,0.06)",
+            borderBottom: "1px solid var(--border)",
             display: "flex",
             alignItems: "center",
             gap: "12px",
-            background: "rgba(10,15,30,0.8)",
-            backdropFilter: "blur(12px)",
+            background: "var(--bg-secondary)",
             flexShrink: 0,
           }}
         >
@@ -166,8 +165,7 @@ export default function ChatPage() {
               width: 38,
               height: 38,
               borderRadius: "10px",
-              background: "linear-gradient(135deg, #00D4FF20, #7C3AED20)",
-              border: "1px solid rgba(0,212,255,0.3)",
+              background: "var(--accent-cyan)",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -176,8 +174,8 @@ export default function ChatPage() {
             <Bot size={18} color="#00D4FF" />
           </div>
           <div style={{ flex: 1 }}>
-            <div style={{ fontSize: "15px", fontWeight: 600, color: "#F0F4FF" }}>MediFlow AI Assistant</div>
-            <div style={{ fontSize: "12px", color: "#8B9BC8", display: "flex", alignItems: "center", gap: "6px" }}>
+            <div style={{ fontSize: "15px", fontWeight: 600, color: "var(--text-primary)" }}>MediFlow AI Assistant</div>
+            <div style={{ fontSize: "12px", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "6px" }}>
               <span className="status-dot online" style={{ width: 6, height: 6 }} />
               6-agent pipeline active • Demo mode
             </div>
@@ -226,8 +224,8 @@ export default function ChatPage() {
                   width: 60,
                   height: 60,
                   borderRadius: "16px",
-                  background: "linear-gradient(135deg, #00D4FF20, #7C3AED20)",
-                  border: "1px solid rgba(0,212,255,0.2)",
+                  background: "var(--bg-card)",
+                  border: "1px solid var(--border)",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -236,10 +234,10 @@ export default function ChatPage() {
               >
                 <Sparkles size={28} color="#00D4FF" />
               </div>
-              <h2 style={{ fontSize: "20px", fontWeight: 700, color: "#F0F4FF", marginBottom: "8px" }}>
+              <h2 style={{ fontSize: "20px", fontWeight: 700, color: "var(--text-primary)", marginBottom: "8px" }}>
                 Hello! How can I help you?
               </h2>
-              <p style={{ color: "#8B9BC8", fontSize: "14px", marginBottom: "32px" }}>
+              <p style={{ color: "var(--text-secondary)", fontSize: "14px", marginBottom: "32px" }}>
                 Ask about appointments, clinic policies, reports, or any health questions.
               </p>
 
@@ -250,23 +248,23 @@ export default function ChatPage() {
                     onClick={() => sendMessage(q)}
                     style={{
                       padding: "8px 14px",
-                      background: "rgba(255,255,255,0.04)",
-                      border: "1px solid rgba(255,255,255,0.08)",
+                      background: "var(--bg-card)",
+                      border: "1px solid var(--border)",
                       borderRadius: "100px",
-                      color: "#8B9BC8",
+                      color: "var(--text-secondary)",
                       fontSize: "13px",
                       cursor: "pointer",
                       transition: "all 0.2s ease",
                     }}
                     onMouseEnter={(e) => {
-                      (e.target as HTMLElement).style.background = "rgba(0,212,255,0.08)";
-                      (e.target as HTMLElement).style.borderColor = "rgba(0,212,255,0.2)";
-                      (e.target as HTMLElement).style.color = "#00D4FF";
+                      (e.target as HTMLElement).style.background = "var(--bg-card-hover)";
+                      (e.target as HTMLElement).style.borderColor = "var(--border-hover)";
+                      (e.target as HTMLElement).style.color = "var(--text-primary)";
                     }}
                     onMouseLeave={(e) => {
-                      (e.target as HTMLElement).style.background = "rgba(255,255,255,0.04)";
-                      (e.target as HTMLElement).style.borderColor = "rgba(255,255,255,0.08)";
-                      (e.target as HTMLElement).style.color = "#8B9BC8";
+                      (e.target as HTMLElement).style.background = "var(--bg-card)";
+                      (e.target as HTMLElement).style.borderColor = "var(--border)";
+                      (e.target as HTMLElement).style.color = "var(--text-secondary)";
                     }}
                   >
                     {q}
@@ -294,7 +292,7 @@ export default function ChatPage() {
                   </div>
                   <div style={{
                     width: 28, height: 28, borderRadius: "8px",
-                    background: "linear-gradient(135deg, #00D4FF, #7C3AED)",
+                    background: "var(--text-muted)",
                     display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
                   }}>
                     <User size={14} color="white" />
@@ -304,11 +302,11 @@ export default function ChatPage() {
                 <div style={{ display: "flex", alignItems: "flex-start", gap: "8px", maxWidth: "85%" }}>
                   <div style={{
                     width: 28, height: 28, borderRadius: "8px",
-                    background: "rgba(0,212,255,0.15)",
-                    border: "1px solid rgba(0,212,255,0.2)",
+                    background: "var(--bg-secondary)",
+                    border: "1px solid var(--border)",
                     display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2,
                   }}>
-                    <Bot size={14} color="#00D4FF" />
+                    <Bot size={14} color="var(--accent-cyan)" />
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     {msg.escalated && (
@@ -354,20 +352,20 @@ export default function ChatPage() {
             <div style={{ display: "flex", alignItems: "flex-start", gap: "8px" }}>
               <div style={{
                 width: 28, height: 28, borderRadius: "8px",
-                background: "rgba(0,212,255,0.15)",
-                border: "1px solid rgba(0,212,255,0.2)",
+                background: "var(--bg-secondary)",
+                border: "1px solid var(--border)",
                 display: "flex", alignItems: "center", justifyContent: "center",
               }}>
-                <Bot size={14} color="#00D4FF" />
+                <Bot size={14} color="var(--accent-cyan)" />
               </div>
               <div style={{
-                padding: "12px 16px", borderRadius: "16px 16px 16px 4px",
-                background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)",
+                padding: "12px 16px", borderRadius: "12px 12px 12px 2px",
+                background: "var(--bg-card)", border: "1px solid var(--border)",
                 display: "flex", gap: "4px", alignItems: "center",
               }}>
                 {[0, 1, 2].map((i) => (
                   <div key={i} style={{
-                    width: 6, height: 6, borderRadius: "50%", background: "#00D4FF",
+                    width: 6, height: 6, borderRadius: "50%", background: "var(--accent-cyan)",
                     animation: `pulse-dot 1.2s infinite`,
                     animationDelay: `${i * 0.2}s`,
                   }} />
@@ -382,9 +380,8 @@ export default function ChatPage() {
         <div
           style={{
             padding: "16px 24px",
-            borderTop: "1px solid rgba(255,255,255,0.06)",
-            background: "rgba(10,15,30,0.8)",
-            backdropFilter: "blur(12px)",
+            borderTop: "1px solid var(--border)",
+            background: "var(--bg-secondary)",
             flexShrink: 0,
           }}
         >
@@ -409,7 +406,7 @@ export default function ChatPage() {
               <Send size={16} />
             </button>
           </div>
-          <div style={{ fontSize: "11px", color: "#4A5680", marginTop: "8px" }}>
+          <div style={{ fontSize: "11px", color: "var(--text-muted)", marginTop: "8px" }}>
             Press Enter to send • This AI is for informational purposes only
           </div>
         </div>
@@ -420,13 +417,13 @@ export default function ChatPage() {
           style={{
             width: "300px",
             minWidth: "300px",
-            borderLeft: "1px solid rgba(255,255,255,0.06)",
+            borderLeft: "1px solid var(--border)",
             padding: "20px 16px",
             overflowY: "auto",
-            background: "rgba(10,15,30,0.6)",
+            background: "var(--bg-secondary)",
           }}
         >
-          <div style={{ fontSize: "13px", fontWeight: 600, color: "#F0F4FF", marginBottom: "16px" }}>
+          <div style={{ fontSize: "13px", fontWeight: 600, color: "var(--text-primary)", marginBottom: "16px" }}>
             Agent Pipeline
           </div>
           <WorkflowTrace
@@ -434,7 +431,7 @@ export default function ChatPage() {
             isLoading={isLoading}
           />
           {!isLoading && messages.length > 0 && (
-            <div style={{ marginTop: "16px", fontSize: "12px", color: "#4A5680" }}>
+            <div style={{ marginTop: "16px", fontSize: "12px", color: "var(--text-muted)" }}>
               Last query processed through 6-agent LangGraph pipeline
             </div>
           )}
